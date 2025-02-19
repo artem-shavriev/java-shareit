@@ -15,5 +15,5 @@ public class ItemRequestDto {
     private Integer id;
     private String description;
     private Integer requestor;
-    private LocalDateTime created;
+    private String created;
 }

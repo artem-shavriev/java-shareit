@@ -13,9 +13,9 @@ import ru.practicum.shareit.user.User;
 @Setter
 public class ItemDtoUpdate {
     private Integer id;
-    private User owner;
+    private Integer ownerId;
     private String name;
     private String description;
     private Boolean available;
-    private ItemRequest request;
+    private Integer requestId;
 }
