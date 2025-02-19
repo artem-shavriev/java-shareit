@@ -1,7 +1,5 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

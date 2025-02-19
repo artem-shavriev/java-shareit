@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
 
@@ -35,8 +36,8 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@Valid @RequestBody UserDto user, @PathVariable Integer userId) {
-        return userService.updateUser(user, userId);
+    public UserDto updateUser(@Valid @RequestBody UserDto user) {
+        return userService.updateUser(user);
     }
 
     @DeleteMapping("/{userId}")
