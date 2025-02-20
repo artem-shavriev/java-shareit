@@ -6,7 +6,10 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.UserMapper;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.UserService;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,26 +19,26 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @Override
     public ItemDto addItem(ItemDto itemDtoRequest, Integer userId) {
-        if (userService.getUserById(userId) == null) {
-            throw new NotFoundException("Пользовтель с данным id не найден.");
-        }
 
-        Item item =  itemRepository.save(itemMapper.mapToItem(itemDtoRequest));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Item item =  itemRepository.save(itemMapper.mapToItem(itemDtoRequest, user));
 
         return itemMapper.mapToItemDto(item);
     }
 
     @Override
     public ItemDtoUpdate updateItem(ItemDtoUpdate itemDtoRequest, Integer userId) {
-        if (userService.getUserById(userId) == null) {
-            throw new NotFoundException("Пользовтель с данным id не найден.");
-        }
 
-        Item item =  itemRepository.save(itemMapper.mapToItem(itemDtoRequest));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Item item =  itemRepository.save(itemMapper.mapToItem(itemDtoRequest, user));
 
         return itemMapper.mapToItemDtoUpdate(item);
     }

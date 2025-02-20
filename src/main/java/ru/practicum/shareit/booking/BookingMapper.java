@@ -5,6 +5,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -29,7 +31,7 @@ public class BookingMapper {
                 .format(booking.getEnd());
 
         return new BookingDto(booking.getId(), startDate, endDate,
-                booking.getItemId(), booking.getBookerId(), booking.getStatus());
+                booking.getItem().getId(), booking.getBooker().getId(), booking.getStatus());
     }
 
     public List<BookingDto> mapToDto(Iterable <Booking> bookings) {
@@ -42,7 +44,7 @@ public class BookingMapper {
         return bookingDtos;
     }
 
-    public Booking mapToBooking(BookingDto bookingDto) {
+    public Booking mapToBooking(BookingDto bookingDto, User booker, Item item) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd hh:mm:ss");
         LocalDateTime localDateTimeStart = LocalDateTime.parse(bookingDto.getStart(), dateTimeFormatter);
         ZonedDateTime zonedDateTimeStart = localDateTimeStart.atZone(ZoneOffset.UTC);
@@ -53,6 +55,6 @@ public class BookingMapper {
         Instant endDate = zonedDateTimeEnd.toInstant();
 
         return new Booking(bookingDto.getId(), startDate, endDate,
-                bookingDto.getItemId(), bookingDto.getBookerId(), bookingDto.getStatus());
+                item, booker, bookingDto.getStatus());
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
@@ -40,10 +41,11 @@ public class ItemMapper {
         return itemDto;
     }
 
-    public Item mapToItem(ItemDtoUpdate itemDto) {
+    public Item mapToItem(ItemDtoUpdate itemDto, User owner) {
         Item item = new Item();
 
         item.setId(itemDto.getId());
+        item.setOwner(owner);
         item.setName(itemDto.getName());
         item.setAvailable(itemDto.getAvailable());
         item.setDescription(itemDto.getDescription());
@@ -52,10 +54,11 @@ public class ItemMapper {
         return item;
     }
 
-    public Item mapToItem(ItemDto itemDto) {
+    public Item mapToItem(ItemDto itemDto, User owner) {
         Item item = new Item();
 
         item.setId(itemDto.getId());
+        item.setOwner(owner);
         item.setName(itemDto.getName());
         item.setAvailable(itemDto.getAvailable());
         item.setDescription(itemDto.getDescription());

@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.user.model.User;
 
 @Repository
-interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, Integer> {
     void deleteById(long id);
 }
