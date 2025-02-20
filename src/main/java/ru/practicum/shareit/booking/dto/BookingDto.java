@@ -1,5 +1,8 @@
 package ru.practicum.shareit.booking.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,8 +14,11 @@ import ru.practicum.shareit.booking.model.Status;
 @Getter
 @Setter
 public class BookingDto {
+    @NotNull
     private Integer id;
+    @NotNull
     private String start;
+    @NotNull
     private String end;
     private Integer itemId;
     private Integer bookerId;
