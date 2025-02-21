@@ -3,6 +3,7 @@ package ru.practicum.shareit.item;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
+import ru.practicum.shareit.item.dto.ItemWithBookingDateDto;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ interface ItemService {
 
     ItemDto getItem(Integer itemId);
 
-    List<ItemDto> getOwnerItems(Integer ownerId);
+    List<ItemWithBookingDateDto> getOwnerItems(Integer ownerId);
 
     List<ItemDto> itemSearch(String text);
 }

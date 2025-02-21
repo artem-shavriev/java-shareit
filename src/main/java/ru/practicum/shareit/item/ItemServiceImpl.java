@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
+import ru.practicum.shareit.item.dto.ItemWithBookingDateDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
@@ -50,10 +51,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getOwnerItems(Integer ownerId) {
+    public List<ItemWithBookingDateDto> getOwnerItems(Integer ownerId) {
         List<Item> ownerItems = itemRepository.findAllByOwnerId(ownerId);
 
-        return ownerItems.stream().map(itemMapper::mapToItemDto).toList();
+        return itemMapper.mapToItemWithBookingDateDto(ownerItems);
     }
 
     @Override

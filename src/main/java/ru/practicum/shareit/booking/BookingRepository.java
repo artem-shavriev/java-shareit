@@ -14,4 +14,10 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "where bk.id = ?1 " +
             "order by b.start")
     List<Booking> findAllByBookerId(Integer bookerId);
+
+    @Query("select b.start, b.end " +
+            "from Booking as b " +
+            "join b.item as i " +
+            "where i.id = ?1")
+    List<String> findItemsBookingDate(Integer itemId);
 }
