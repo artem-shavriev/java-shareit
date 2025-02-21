@@ -29,13 +29,15 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto addBooking(BookingDto bookingDto, Integer userId) {
-        bookingDto.setStatus(Status.WAITING);
 
         User booker = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
-
         Item item = itemRepository.findById(bookingDto.getItemId())
                 .orElseThrow(() -> new NotFoundException("Item not found"));
+        if (!item.getAvailable()) {
+            throw new ValidationException("Предмет недоступен для брони.");
+        }
+        bookingDto.setStatus(Status.WAITING);
 
         Booking booking = bookingRepository.save(bookingMapper.mapToBooking(bookingDto, booker, item));
 
