@@ -7,9 +7,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
 import ru.practicum.shareit.item.dto.ItemWithBookingDateDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
@@ -26,7 +24,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto addItem(ItemDto itemDtoRequest, Integer userId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
         Item item =  itemRepository.save(itemMapper.mapToItem(itemDtoRequest, user));
 
@@ -34,14 +32,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoUpdate updateItem(ItemDtoUpdate itemDtoRequest, Integer userId) {
+    public ItemDto updateItem(ItemDtoUpdate itemDtoRequest, Integer userId, Integer itemId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
 
-        Item item =  itemRepository.save(itemMapper.mapToItem(itemDtoRequest, user));
+        Item item =  itemRepository.getById(itemId);
 
-        return itemMapper.mapToItemDtoUpdate(item);
+        item = itemMapper.updateFields(item, itemDtoRequest);
+
+        return itemMapper.mapToItemDto(item);
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 public interface BookingService {
-    BookingDto addBooking(BookingDto bookingDto);
+    BookingDto addBooking(BookingDto bookingDto, Integer userId);
 
     BookingDto updateBookingStatus(Integer requestOwnerId, Integer bookingId, boolean status);
 

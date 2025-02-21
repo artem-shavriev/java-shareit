@@ -14,12 +14,12 @@ import ru.practicum.shareit.booking.model.Status;
 @Getter
 @Setter
 public class BookingDto {
-    @NotNull
     private Integer id;
     @NotNull
     private String start;
     @NotNull
     private String end;
+    @NotNull
     private Integer itemId;
     private Integer bookerId;
     private Status status;

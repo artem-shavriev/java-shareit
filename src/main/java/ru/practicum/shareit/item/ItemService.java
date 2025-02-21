@@ -11,7 +11,7 @@ import java.util.List;
 interface ItemService {
     ItemDto addItem(ItemDto itemDtoRequest, Integer userId);
 
-    ItemDtoUpdate updateItem(ItemDtoUpdate itemDtoRequest, Integer userId);
+    ItemDto updateItem(ItemDtoUpdate itemDtoRequest, Integer userId, Integer itemId);
 
     ItemDto getItem(Integer itemId);
 

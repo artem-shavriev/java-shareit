@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
@@ -28,11 +28,14 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
-    public BookingDto addBooking(BookingDto bookingDto) {
+    public BookingDto addBooking(BookingDto bookingDto, Integer userId) {
         bookingDto.setStatus(Status.WAITING);
 
-        User booker = userRepository.getById(bookingDto.getBookerId());
-        Item item = itemRepository.getById(bookingDto.getItemId());
+        User booker = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        Item item = itemRepository.findById(bookingDto.getItemId())
+                .orElseThrow(() -> new NotFoundException("Item not found"));
 
         Booking booking = bookingRepository.save(bookingMapper.mapToBooking(bookingDto, booker, item));
 
@@ -41,14 +44,16 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDto findBookingById(Integer id) {
-        Booking booking = bookingRepository.getById(id);
+        Booking booking = bookingRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Booking not found"));
 
         return bookingMapper.mapToDto(booking);
     }
 
     @Override
     public BookingDto updateBookingStatus(Integer requestOwnerId, Integer bookingId, boolean status) {
-        Booking booking = bookingRepository.getById(bookingId);
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new NotFoundException("Booking not found"));
         Integer ownerId = booking.getItem().getOwner().getId();
 
         if (!Objects.equals(requestOwnerId, ownerId)) {

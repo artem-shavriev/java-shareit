@@ -6,5 +6,4 @@ import ru.practicum.shareit.user.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    void deleteById(long id);
 }
