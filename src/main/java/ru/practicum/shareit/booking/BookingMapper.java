@@ -21,12 +21,12 @@ import java.util.List;
 public class BookingMapper {
     public BookingDto mapToDto(Booking booking) {
         String startDate = DateTimeFormatter
-                .ofPattern("yyyy-MM-dd HH:mm:ss")
+                .ofPattern("yyyy-MM-dd'T'HH:mm:ss")
                 .withZone(ZoneOffset.UTC)
                 .format(booking.getStart());
 
         String endDate = DateTimeFormatter
-                .ofPattern("yyyy-MM-dd HH:mm:ss")
+                .ofPattern("yyyy-MM-dd'T'HH:mm:ss")
                 .withZone(ZoneOffset.UTC)
                 .format(booking.getEnd());
 
@@ -45,7 +45,7 @@ public class BookingMapper {
     }
 
     public Booking mapToBooking(BookingDto bookingDto, User booker, Item item) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalDateTime localDateTimeStart = LocalDateTime.parse(bookingDto.getStart(), dateTimeFormatter);
         ZonedDateTime zonedDateTimeStart = localDateTimeStart.atZone(ZoneOffset.UTC);
         Instant startDate = zonedDateTimeStart.toInstant();

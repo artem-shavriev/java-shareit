@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.model.Booking;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto addBooking(@Valid @RequestBody BookingDto bookingDto,
-                                 @RequestHeader("X-Sharer-User-Id") Integer userId) {
+                              @RequestHeader("X-Sharer-User-Id") Integer userId) {
         return bookingService.addBooking(bookingDto, userId);
     }
 
