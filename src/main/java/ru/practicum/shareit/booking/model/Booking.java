@@ -39,12 +39,12 @@ public class Booking {
     @Column(name = "end_time", nullable = false)
     private Instant end;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     @JoinColumn(name = "booker_id")
     private User booker;

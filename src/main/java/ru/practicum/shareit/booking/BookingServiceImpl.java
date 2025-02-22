@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -28,7 +29,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
-    public BookingDto addBooking(BookingDto bookingDto, Integer userId) {
+    public BookingDtoResponse addBooking(BookingDto bookingDto, Integer userId) {
 
         User booker = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
@@ -41,19 +42,19 @@ public class BookingServiceImpl implements BookingService {
 
         Booking booking = bookingRepository.save(bookingMapper.mapToBooking(bookingDto, booker, item));
 
-        return bookingMapper.mapToDto(booking);
+        return bookingMapper.mapToDtoResponse(booking);
     }
 
     @Override
-    public BookingDto findBookingById(Integer id) {
+    public BookingDtoResponse findBookingById(Integer id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Booking not found"));
 
-        return bookingMapper.mapToDto(booking);
+        return bookingMapper.mapToDtoResponse(booking);
     }
 
     @Override
-    public BookingDto updateBookingStatus(Integer requestOwnerId, Integer bookingId, boolean status) {
+    public BookingDtoResponse updateBookingStatus(Integer requestOwnerId, Integer bookingId, boolean status) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Booking not found"));
         Integer ownerId = booking.getItem().getOwner().getId();
@@ -69,23 +70,23 @@ public class BookingServiceImpl implements BookingService {
         } else {
             booking.setStatus(Status.REJECTED);
         }
-        return bookingMapper.mapToDto(bookingRepository.save(booking));
+        return bookingMapper.mapToDtoResponse(bookingRepository.save(booking));
     }
 
     @Override
-    public List<BookingDto> findUsersBookings(Integer userId, String state) {
+    public List<BookingDtoResponse> findUsersBookings(Integer userId, String state) {
         List<Booking> allUsersBookings = bookingRepository.findAllByBookerId(userId);
 
-        return bookingMapper.mapToDto(sortBookingByState(state, allUsersBookings));
+        return bookingMapper.mapToDtoResponse(sortBookingByState(state, allUsersBookings));
     }
 
     @Override
-    public List<BookingDto> findUsersItemsBookings(Integer userId, String state) {
+    public List<BookingDtoResponse> findUsersItemsBookings(Integer userId, String state) {
         List<Item> findUserItems = itemRepository.findAllByUserId(userId);
 
         if (findUserItems.isEmpty() || findUserItems == null) {
             log.error("У пользователя c id {} нет вещей.", userId);
-            throw new ValidationException("У пользователя нет вещей.");
+            throw new NotFoundException("У пользователя нет вещей.");
         }
 
         List<Booking> allBookings = bookingRepository.findAll();
@@ -97,7 +98,7 @@ public class BookingServiceImpl implements BookingService {
             }
         });
 
-        return bookingMapper.mapToDto(sortBookingByState(state, userItemsBookings));
+        return bookingMapper.mapToDtoResponse(sortBookingByState(state, userItemsBookings));
     }
 
 
