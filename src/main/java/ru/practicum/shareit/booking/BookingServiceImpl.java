@@ -41,7 +41,7 @@ public class BookingServiceImpl implements BookingService {
         bookingDto.setStatus(Status.WAITING);
 
         Booking booking = bookingRepository.save(bookingMapper.mapToBooking(bookingDto, booker, item));
-
+        log.info("Пользователь с id {}, создал бронь с id {} на вещь с id {}", userId, booking.getId(), item.getId());
         return bookingMapper.mapToDtoResponse(booking);
     }
 
@@ -49,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDtoResponse findBookingById(Integer id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Booking not found"));
-
+        log.info("Найдена бронь по id {}", id);
         return bookingMapper.mapToDtoResponse(booking);
     }
 
@@ -70,6 +70,7 @@ public class BookingServiceImpl implements BookingService {
         } else {
             booking.setStatus(Status.REJECTED);
         }
+        log.info("Обновлен статус бронирования с id {}", bookingId);
         return bookingMapper.mapToDtoResponse(bookingRepository.save(booking));
     }
 
@@ -77,6 +78,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDtoResponse> findUsersBookings(Integer userId, String state) {
         List<Booking> allUsersBookings = bookingRepository.findAllByBookerId(userId);
 
+        log.info("Найдены все бронирования пользователя с id {}", userId);
         return bookingMapper.mapToDtoResponse(sortBookingByState(state, allUsersBookings));
     }
 
@@ -98,6 +100,7 @@ public class BookingServiceImpl implements BookingService {
             }
         });
 
+        log.info("Найдены все бронирования вещей пользователя с id {}", userId);
         return bookingMapper.mapToDtoResponse(sortBookingByState(state, userItemsBookings));
     }
 

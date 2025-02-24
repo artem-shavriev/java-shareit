@@ -29,7 +29,7 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String text;
+    String text;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude

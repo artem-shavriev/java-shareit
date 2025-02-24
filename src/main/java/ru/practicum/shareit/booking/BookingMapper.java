@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
+import ru.practicum.shareit.booking.dto.BookingDtoWithDate;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
@@ -33,16 +34,6 @@ public class BookingMapper {
 
         return new BookingDto(booking.getId(), startDate, endDate,
                 booking.getItem().getId(), booking.getBooker().getId(), booking.getStatus());
-    }
-
-    public List<BookingDto> mapToDto(Iterable <Booking> bookings) {
-        List<BookingDto> bookingDtos = new ArrayList<>();
-
-        for (Booking b : bookings) {
-            bookingDtos.add(mapToDto(b));
-        }
-
-        return bookingDtos;
     }
 
     public Booking mapToBooking(BookingDto bookingDto, User booker, Item item) {
@@ -76,5 +67,9 @@ public class BookingMapper {
 
     public List<BookingDtoResponse> mapToDtoResponse(List<Booking> bookings) {
         return bookings.stream().map(booking -> mapToDtoResponse(booking)).toList();
+    }
+
+    public BookingDtoWithDate mapToBookingDtoWithDate(Booking booking) {
+        return new BookingDtoWithDate(booking.getStart(), booking.getEnd());
     }
 }
