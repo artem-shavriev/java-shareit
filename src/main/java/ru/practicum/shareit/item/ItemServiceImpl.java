@@ -93,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
 
         List<Booking> userBookings = bookingRepository.findAllByBookerId(userId);
 
-        if (userBookings == null && userBookings.isEmpty()) {
+        if (userBookings.isEmpty()) {
             log.error("Пользователь с id {} еще не создавал бронь на вещь с id {}", userId, itemId);
             throw new NotFoundException("Пользователь еще не создавал бронь.");
         }
