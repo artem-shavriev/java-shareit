@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
@@ -37,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        Item item =  itemRepository.save(itemMapper.mapToItem(itemDtoRequest, user));
+        Item item = itemRepository.save(itemMapper.mapToItem(itemDtoRequest, user));
 
         log.info("Добавлена вещь с id {}", item.getId());
         return itemMapper.mapToItemDto(item);
@@ -49,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        Item item =  itemRepository.getById(itemId);
+        Item item = itemRepository.getById(itemId);
 
         item = itemMapper.updateFields(item, itemDtoRequest);
 
@@ -87,7 +88,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public CommentDto addComment(Integer itemId, Integer userId, Comment comment) {
         int threeHoursInSeconds = 10800;
-        Instant now = Instant.now().plusSeconds(threeHoursInSeconds);//LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant();
+        Instant now = Instant.now().plusSeconds(threeHoursInSeconds);
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item not found"));
 
@@ -98,19 +99,26 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Пользователь еще не создавал бронь.");
         }
 
-            userBookings.forEach(booking -> {
+        List<Booking> currentBooking = new ArrayList<>();
+        userBookings.forEach(booking -> {
+            if (booking.getItem().getId().equals(itemId) && booking.getEnd().isBefore(now)) {
+                currentBooking.add(booking);
+            }
+        });
 
-                if (booking.getBooker().getId().equals(userId) && booking.getEnd().isBefore(now)) {
-                    User author = userRepository.findById(userId)
-                            .orElseThrow(() -> new NotFoundException("Author not found"));
+        if (currentBooking.isEmpty()) {
+            log.error("Пользователь c id {} не может оставить отзыв на предмет c id {}", userId, itemId);
+            throw new ValidationException("Пользоветль не может оставить отзыв на этот предмет.");
+        }
 
-                    comment.setItem(item);
-                    comment.setAuthor(author);
-                    comment.setCreated(Instant.now());
+        User author = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Author not found"));
 
-                    commentRepository.save(comment);
-                }
-            });
+        comment.setItem(item);
+        comment.setAuthor(author);
+        comment.setCreated(Instant.now());
+
+        commentRepository.save(comment);
 
         log.info("Отзыв на вещь с id {} оставлен пользователем с id {}", itemId, userId);
         return commentMapper.mapToCommentDto(comment);
