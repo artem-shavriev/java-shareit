@@ -89,7 +89,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public CommentDto addComment(Integer itemId, Integer userId, Comment comment) {
-        int threeHoursInSeconds = 10800;
+        //int threeHoursInSeconds = 10800;
         //Instant now = Instant.now().plusSeconds(threeHoursInSeconds);
         Instant now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant();
         Item item = itemRepository.findById(itemId)
