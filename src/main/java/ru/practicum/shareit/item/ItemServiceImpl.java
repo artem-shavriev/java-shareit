@@ -18,6 +18,8 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +90,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public CommentDto addComment(Integer itemId, Integer userId, Comment comment) {
         int threeHoursInSeconds = 10800;
-        Instant now = Instant.now().plusSeconds(threeHoursInSeconds);
+        //Instant now = Instant.now().plusSeconds(threeHoursInSeconds);
+        Instant now = LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant();
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Item not found"));
 
