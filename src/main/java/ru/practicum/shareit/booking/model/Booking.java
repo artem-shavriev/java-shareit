@@ -20,6 +20,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,10 +35,10 @@ public class Booking {
     private Integer id;
 
     @Column(name = "start_time", nullable = false)
-    private Instant start;
+    private LocalDateTime start;
 
     @Column(name = "end_time", nullable = false)
-    private Instant end;
+    private LocalDateTime end;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @ToString.Exclude

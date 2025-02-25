@@ -1,22 +1,25 @@
 package ru.practicum.shareit.booking.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import ru.practicum.shareit.booking.model.Status;
+
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class BookingDto {
     private Integer id;
     @NotNull
-    private String start;
+    @JsonFormat
+    private LocalDateTime start;
     @NotNull
-    private String end;
+    @JsonFormat
+    private LocalDateTime end;
     @NotNull
     private Integer itemId;
     private Integer bookerId;

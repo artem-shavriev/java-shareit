@@ -1,22 +1,26 @@
 package ru.practicum.shareit.booking.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.cglib.core.Local;
 import ru.practicum.shareit.booking.model.Status;
-import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.dto.UserDto;
+
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class BookingDtoResponse {
     private Integer id;
-    private String start;
-    private String end;
-    private Item item;
-    private User booker;
+    @JsonFormat
+    private LocalDateTime start;
+    @JsonFormat
+    private LocalDateTime end;
+    private ItemDto item;
+    private UserDto booker;
     private Status status;
 }

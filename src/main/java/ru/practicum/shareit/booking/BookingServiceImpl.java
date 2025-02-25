@@ -3,9 +3,11 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -15,6 +17,7 @@ import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,6 +32,7 @@ public class BookingServiceImpl implements BookingService {
     private final ItemRepository itemRepository;
 
     @Override
+    @Transactional
     public BookingDtoResponse addBooking(BookingDto bookingDto, Integer userId) {
 
         User booker = userRepository.findById(userId)
@@ -46,6 +50,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingDtoResponse findBookingById(Integer id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Booking not found"));
@@ -54,6 +59,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDtoResponse updateBookingStatus(Integer requestOwnerId, Integer bookingId, boolean status) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Booking not found"));
@@ -75,16 +81,17 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoResponse> findUsersBookings(Integer userId, String state) {
-        List<Booking> allUsersBookings = bookingRepository.findAllByBookerId(userId);
+    @Transactional(readOnly = true)
+    public List<BookingDtoResponse> findUsersBookings(Integer userId, State state) {
 
         log.info("Найдены все бронирования пользователя с id {}", userId);
-        return bookingMapper.mapToDtoResponse(sortBookingByState(state, allUsersBookings));
+        return bookingMapper.mapToDtoResponse(sortBookingByState(state, userId));
     }
 
     @Override
-    public List<BookingDtoResponse> findUsersItemsBookings(Integer userId, String state) {
-        List<Item> findUserItems = itemRepository.findAllByUserId(userId);
+    @Transactional(readOnly = true)
+    public List<BookingDtoResponse> findUsersItemsBookings(Integer userId, State state) {
+        List<Item> findUserItems = itemRepository.findAllByOwnerId(userId);
 
         if (findUserItems.isEmpty() || findUserItems == null) {
             log.error("У пользователя c id {} нет вещей.", userId);
@@ -101,64 +108,48 @@ public class BookingServiceImpl implements BookingService {
         });
 
         log.info("Найдены все бронирования вещей пользователя с id {}", userId);
-        return bookingMapper.mapToDtoResponse(sortBookingByState(state, userItemsBookings));
+        return bookingMapper.mapToDtoResponse(sortBookingByState(state, userId));
     }
 
-
-    public List<Booking> sortBookingByState(String state, List<Booking> allUsersBookings) {
+    public List<Booking> sortBookingByState(State state, Integer userId) {
         List<Booking> usersBookingsWithState = new ArrayList<>();
 
-        if (state.equals("WAITING")) {
-            allUsersBookings.forEach(booking -> {
-                if (booking.getStatus().equals(Status.WAITING)) {
+        if (state.equals(State.WAITING)) {
+            return bookingRepository.findBookingWithWaitingStatus(userId);
+
+        } else if (state.equals(State.CURRENT)) {
+            bookingRepository.findBookingWithApprovedStatus(userId).forEach(booking -> {
+                if ((booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().equals(Instant.now()))
+                        && (booking.getEnd().isAfter(LocalDateTime.now()) || booking.getEnd().equals(Instant.now()))) {
                     usersBookingsWithState.add(booking);
                 }
             });
 
             return usersBookingsWithState;
 
-        } else if (state.equals("CURRENT")) {
-            allUsersBookings.forEach(booking -> {
-                if (booking.getStatus().equals(Status.APPROVED)
-                        && (booking.getStart().isBefore(Instant.now()) || booking.getStart().equals(Instant.now()))
-                        && (booking.getEnd().isAfter(Instant.now()) || booking.getEnd().equals(Instant.now()))) {
+        } else if (state.equals(State.FUTURE)) {
+            bookingRepository.findBookingWithApprovedStatus(userId).forEach(booking -> {
+                if (booking.getStart().isAfter(LocalDateTime.now())) {
                     usersBookingsWithState.add(booking);
                 }
             });
 
             return usersBookingsWithState;
 
-        } else if (state.equals("FUTURE")) {
-            allUsersBookings.forEach(booking -> {
-                if (booking.getStatus().equals(Status.APPROVED)
-                        && (booking.getStart().isAfter(Instant.now()))) {
+        } else if (state.equals(State.PAST)) {
+            bookingRepository.findBookingWithApprovedStatus(userId).forEach(booking -> {
+                if (booking.getEnd().isBefore(LocalDateTime.now())) {
                     usersBookingsWithState.add(booking);
                 }
             });
 
             return usersBookingsWithState;
 
-        } else if (state.equals("PAST")) {
-            allUsersBookings.forEach(booking -> {
-                if ((booking.getStatus().equals(Status.APPROVED) || booking.getStatus().equals(Status.CANCELED))
-                        && booking.getEnd().isBefore(Instant.now())) {
-                    usersBookingsWithState.add(booking);
-                }
-            });
-
-            return usersBookingsWithState;
-
-        } else if (state.equals("REJECTED")) {
-            allUsersBookings.forEach(booking -> {
-                if (booking.getStatus().equals(Status.REJECTED)) {
-                    usersBookingsWithState.add(booking);
-                }
-            });
-
-            return usersBookingsWithState;
+        } else if (state.equals(State.REJECTED)) {
+            return bookingRepository.findBookingWithRejectedStatus(userId);
 
         } else {
-            return allUsersBookings;
+            return bookingRepository.findAllByBookerIdOrderByStart(userId);
         }
     }
 }

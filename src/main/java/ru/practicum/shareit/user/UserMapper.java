@@ -33,14 +33,4 @@ public class UserMapper {
 
         return user;
     }
-
-    public User updateFields(User user, UserDto userDto) {
-        if (userDto.hasName()) {
-            user.setName(userDto.getName());
-        }
-        if (userDto.hasEmail()) {
-            user.setEmail(userDto.getEmail());
-        }
-        return user;
-    }
 }

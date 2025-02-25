@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import lombok.ToString;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,14 +34,13 @@ public class Comment {
     String text;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @ToString.Exclude
     @JoinColumn(name = "item_id")
     private Item item;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @ToString.Exclude
     @JoinColumn(name = "author_id")
     private User author;
 
-    private Instant created;
+    @JsonFormat
+    private LocalDateTime created;
 }

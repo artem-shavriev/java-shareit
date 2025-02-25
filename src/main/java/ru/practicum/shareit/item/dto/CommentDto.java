@@ -1,20 +1,21 @@
 package ru.practicum.shareit.item.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class CommentDto {
     private Integer id;
     private String text;
     private String itemName;
     private String authorName;
-    private Instant created;
+    @JsonFormat
+    private LocalDateTime created;
 }

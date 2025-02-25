@@ -1,5 +1,6 @@
 package ru.practicum.shareit.request.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,5 +32,6 @@ public class ItemRequest {
     @Column(name = "requestor_id")
     private Integer requestorId;
 
-    private Instant created;
+    @JsonFormat
+    private LocalDateTime created;
 }

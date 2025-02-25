@@ -1,17 +1,18 @@
 package ru.practicum.shareit.booking.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class BookingDtoWithDate {
-    private Instant start;
-    private Instant end;
+    @JsonFormat
+    private LocalDateTime start;
+    @JsonFormat
+    private LocalDateTime end;
 }
