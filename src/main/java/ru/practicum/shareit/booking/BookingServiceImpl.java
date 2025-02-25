@@ -16,7 +16,6 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -127,8 +126,8 @@ public class BookingServiceImpl implements BookingService {
         } else if (state.equals(State.CURRENT)) {
             allUsersBookings.forEach(booking -> {
                 if (booking.getStatus().equals(Status.APPROVED)
-                        && (booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().equals(Instant.now()))
-                        && (booking.getEnd().isAfter(LocalDateTime.now()) || booking.getEnd().equals(Instant.now()))) {
+                        && (booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().equals(LocalDateTime.now()))
+                        && (booking.getEnd().isAfter(LocalDateTime.now()) || booking.getEnd().equals(LocalDateTime.now()))) {
                     usersBookingsWithState.add(booking);
                 }
             });
