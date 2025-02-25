@@ -83,9 +83,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional(readOnly = true)
     public List<BookingDtoResponse> findUsersBookings(Integer userId, State state) {
+        List<Booking> allUsersBookings = bookingRepository.findAllByBookerIdOrderByStart(userId);
 
         log.info("Найдены все бронирования пользователя с id {}", userId);
-        return bookingMapper.mapToDtoResponse(sortBookingByState(state, userId));
+        return bookingMapper.mapToDtoResponse(sortBookingByState(state, allUsersBookings));
     }
 
     @Override
@@ -108,18 +109,25 @@ public class BookingServiceImpl implements BookingService {
         });
 
         log.info("Найдены все бронирования вещей пользователя с id {}", userId);
-        return bookingMapper.mapToDtoResponse(sortBookingByState(state, userId));
+        return bookingMapper.mapToDtoResponse(sortBookingByState(state, userItemsBookings));
     }
 
-    public List<Booking> sortBookingByState(State state, Integer userId) {
+    public List<Booking> sortBookingByState(State state, List<Booking> allUsersBookings) {
         List<Booking> usersBookingsWithState = new ArrayList<>();
 
         if (state.equals(State.WAITING)) {
-            return bookingRepository.findBookingWithWaitingStatus(userId);
+            allUsersBookings.forEach(booking -> {
+                if (booking.getStatus().equals(Status.WAITING)) {
+                    usersBookingsWithState.add(booking);
+                }
+            });
+
+            return usersBookingsWithState;
 
         } else if (state.equals(State.CURRENT)) {
-            bookingRepository.findBookingWithApprovedStatus(userId).forEach(booking -> {
-                if ((booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().equals(Instant.now()))
+            allUsersBookings.forEach(booking -> {
+                if (booking.getStatus().equals(Status.APPROVED)
+                        && (booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().equals(Instant.now()))
                         && (booking.getEnd().isAfter(LocalDateTime.now()) || booking.getEnd().equals(Instant.now()))) {
                     usersBookingsWithState.add(booking);
                 }
@@ -128,8 +136,9 @@ public class BookingServiceImpl implements BookingService {
             return usersBookingsWithState;
 
         } else if (state.equals(State.FUTURE)) {
-            bookingRepository.findBookingWithApprovedStatus(userId).forEach(booking -> {
-                if (booking.getStart().isAfter(LocalDateTime.now())) {
+            allUsersBookings.forEach(booking -> {
+                if (booking.getStatus().equals(Status.APPROVED)
+                        && (booking.getStart().isAfter(LocalDateTime.now()))) {
                     usersBookingsWithState.add(booking);
                 }
             });
@@ -137,8 +146,9 @@ public class BookingServiceImpl implements BookingService {
             return usersBookingsWithState;
 
         } else if (state.equals(State.PAST)) {
-            bookingRepository.findBookingWithApprovedStatus(userId).forEach(booking -> {
-                if (booking.getEnd().isBefore(LocalDateTime.now())) {
+            allUsersBookings.forEach(booking -> {
+                if ((booking.getStatus().equals(Status.APPROVED) || booking.getStatus().equals(Status.CANCELED))
+                        && booking.getEnd().isBefore(LocalDateTime.now())) {
                     usersBookingsWithState.add(booking);
                 }
             });
@@ -146,10 +156,16 @@ public class BookingServiceImpl implements BookingService {
             return usersBookingsWithState;
 
         } else if (state.equals(State.REJECTED)) {
-            return bookingRepository.findBookingWithRejectedStatus(userId);
+            allUsersBookings.forEach(booking -> {
+                if (booking.getStatus().equals(Status.REJECTED)) {
+                    usersBookingsWithState.add(booking);
+                }
+            });
+
+            return usersBookingsWithState;
 
         } else {
-            return bookingRepository.findAllByBookerIdOrderByStart(userId);
+            return allUsersBookings;
         }
     }
 }

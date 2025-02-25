@@ -12,26 +12,5 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     List<Booking> findAllByBookerIdOrderByStart(Integer bookerId);
 
-   @Query("select b " +
-            "from Booking b "+
-            "join b.booker as bb " +
-            "where bb.id = ?1 and b.status = 'WAITING' " +
-            "order by b.start")
-    List<Booking> findBookingWithWaitingStatus(Integer bookerId);
-
-    @Query("select b " +
-            "from Booking b "+
-            "join b.booker as bb " +
-            "where bb.id = ?1 and b.status = 'APPROVED' " +
-            "order by b.start")
-    List<Booking> findBookingWithApprovedStatus(Integer bookerId);
-
-    @Query("select b " +
-            "from Booking b "+
-            "join b.booker as bb " +
-            "where bb.id = ?1 and b.status = 'REJECTED' " +
-            "order by b.start")
-    List<Booking> findBookingWithRejectedStatus(Integer bookerId);
-
     List<Booking> findAllByItemId(Integer itemId);
 }
