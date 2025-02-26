@@ -53,6 +53,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingDtoResponse findBookingById(Integer id) {
         Booking booking = bookingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Booking not found"));
+
         log.info("Найдена бронь по id {}", id);
         return bookingMapper.mapToDtoResponse(booking);
     }
@@ -65,7 +66,7 @@ public class BookingServiceImpl implements BookingService {
         Integer ownerId = booking.getItem().getOwner().getId();
 
         if (!Objects.equals(requestOwnerId, ownerId)) {
-            log.error("id алвдельца вещи {} не совпадает с id {} запроса.", ownerId, requestOwnerId);
+            log.error("id владельца вещи {} не совпадает с id {} запроса.", ownerId, requestOwnerId);
             throw new ValidationException("Изменять статус брони может только владелец вещи, " +
                     "id владельца вещи не совпадает с id запрашивающего изменение пользователя");
         }
@@ -79,13 +80,23 @@ public class BookingServiceImpl implements BookingService {
         return bookingMapper.mapToDtoResponse(bookingRepository.save(booking));
     }
 
-    @Override
     @Transactional(readOnly = true)
     public List<BookingDtoResponse> findUsersBookings(Integer userId, State state) {
-        List<Booking> allUsersBookings = bookingRepository.findAllByBookerIdOrderByStart(userId);
-
-        log.info("Найдены все бронирования пользователя с id {}", userId);
-        return bookingMapper.mapToDtoResponse(sortBookingByState(state, allUsersBookings));
+        LocalDateTime now = LocalDateTime.now();
+        return switch (state) {
+            case WAITING ->
+                    bookingMapper.mapToDtoResponse(bookingRepository.findUsersBookingsByIdAndWaitingState(userId));
+            case CURRENT ->
+                    bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndCurrentState(userId, now));
+            case FUTURE ->
+                    bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndFutureState(userId, now));
+            case PAST ->
+                    bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndPastState(userId, now));
+            case REJECTED ->
+                    bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndRejectedState(userId, now));
+            case ALL ->
+                    bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndAllState(userId));
+        };
     }
 
     @Override
@@ -98,73 +109,60 @@ public class BookingServiceImpl implements BookingService {
             throw new NotFoundException("У пользователя нет вещей.");
         }
 
-        List<Booking> allBookings = bookingRepository.findAll();
-        List<Booking> userItemsBookings = new ArrayList<>();
+        List<BookingDtoResponse> userItemsBookings = new ArrayList<>();
 
-        allBookings.forEach(booking -> {
-            if (findUserItems.contains(booking.getItem())) {
-                userItemsBookings.add(booking);
-            }
-        });
+        LocalDateTime now = LocalDateTime.now();
+        switch (state) {
+            case WAITING:
+                findUserItems.forEach(item -> {
+                    bookingRepository.findItemBookingsByIdAndWaitingState(item.getId()).forEach(booking ->
+                            userItemsBookings.add(bookingMapper.mapToDtoResponse(booking)));
+                });
+                log.info("Найдены все бронирования вещей пользователя с id {} и state {}", userId, state);
+                return userItemsBookings;
 
-        log.info("Найдены все бронирования вещей пользователя с id {}", userId);
-        return bookingMapper.mapToDtoResponse(sortBookingByState(state, userItemsBookings));
-    }
+            case CURRENT:
+                findUserItems.forEach(item -> {
+                    bookingRepository.findItemBookingsByIdAndCurrentState(item.getId(), now).forEach(booking ->
+                            userItemsBookings.add(bookingMapper.mapToDtoResponse(booking)));
+                });
+                log.info("Найдены все бронирования вещей пользователя с id {} и state {}", userId, state);
+                return userItemsBookings;
 
-    public List<Booking> sortBookingByState(State state, List<Booking> allUsersBookings) {
-        List<Booking> usersBookingsWithState = new ArrayList<>();
+            case FUTURE:
+                findUserItems.forEach(item -> {
+                    bookingRepository.findItemBookingsByIdAndFutureState(item.getId(), now).forEach(booking ->
+                            userItemsBookings.add(bookingMapper.mapToDtoResponse(booking)));
+                });
+                log.info("Найдены все бронирования вещей пользователя с id {} и state {}", userId, state);
+                return userItemsBookings;
 
-        if (state.equals(State.WAITING)) {
-            allUsersBookings.forEach(booking -> {
-                if (booking.getStatus().equals(Status.WAITING)) {
-                    usersBookingsWithState.add(booking);
-                }
-            });
+            case PAST:
+                findUserItems.forEach(item -> {
+                    bookingRepository.findItemBookingsByIdAndPastState(item.getId(), now).forEach(booking ->
+                            userItemsBookings.add(bookingMapper.mapToDtoResponse(booking)));
+                });
+                log.info("Найдены все бронирования вещей пользователя с id {} и state {}", userId, state);
+                return userItemsBookings;
 
-            return usersBookingsWithState;
+            case REJECTED:
+                findUserItems.forEach(item -> {
+                    bookingRepository.findItemBookingsByIdAndRejectedState(item.getId(), now).forEach(booking ->
+                            userItemsBookings.add(bookingMapper.mapToDtoResponse(booking)));
+                });
+                log.info("Найдены все бронирования вещей пользователя с id {} и state {}", userId, state);
+                return userItemsBookings;
 
-        } else if (state.equals(State.CURRENT)) {
-            allUsersBookings.forEach(booking -> {
-                if (booking.getStatus().equals(Status.APPROVED)
-                        && (booking.getStart().isBefore(LocalDateTime.now()) || booking.getStart().equals(LocalDateTime.now()))
-                        && (booking.getEnd().isAfter(LocalDateTime.now()) || booking.getEnd().equals(LocalDateTime.now()))) {
-                    usersBookingsWithState.add(booking);
-                }
-            });
+            case ALL:
+                findUserItems.forEach(item -> {
+                    bookingRepository.findItemBookingsByIdAndAllState(item.getId()).forEach(booking ->
+                            userItemsBookings.add(bookingMapper.mapToDtoResponse(booking)));
+                });
+                log.info("Найдены все бронирования вещей пользователя с id {} и state {}", userId, state);
+                return userItemsBookings;
 
-            return usersBookingsWithState;
-
-        } else if (state.equals(State.FUTURE)) {
-            allUsersBookings.forEach(booking -> {
-                if (booking.getStatus().equals(Status.APPROVED)
-                        && (booking.getStart().isAfter(LocalDateTime.now()))) {
-                    usersBookingsWithState.add(booking);
-                }
-            });
-
-            return usersBookingsWithState;
-
-        } else if (state.equals(State.PAST)) {
-            allUsersBookings.forEach(booking -> {
-                if ((booking.getStatus().equals(Status.APPROVED) || booking.getStatus().equals(Status.CANCELED))
-                        && booking.getEnd().isBefore(LocalDateTime.now())) {
-                    usersBookingsWithState.add(booking);
-                }
-            });
-
-            return usersBookingsWithState;
-
-        } else if (state.equals(State.REJECTED)) {
-            allUsersBookings.forEach(booking -> {
-                if (booking.getStatus().equals(Status.REJECTED)) {
-                    usersBookingsWithState.add(booking);
-                }
-            });
-
-            return usersBookingsWithState;
-
-        } else {
-            return allUsersBookings;
+            default:
+                throw new NotFoundException("Неизвестный state");
         }
     }
 }
