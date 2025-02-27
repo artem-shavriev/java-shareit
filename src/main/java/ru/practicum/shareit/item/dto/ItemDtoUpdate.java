@@ -1,21 +1,36 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import ru.practicum.shareit.request.ItemRequest;
-import ru.practicum.shareit.user.User;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class ItemDtoUpdate {
-    private Integer id;
-    private User owner;
+    private Integer ownerId;
     private String name;
     private String description;
     private Boolean available;
-    private ItemRequest request;
+    private Integer requestId;
+
+    public boolean hasOwnerId() {
+        return ownerId != null;
+    }
+
+    public boolean hasName() {
+        return name != null && !name.isBlank();
+    }
+
+    public boolean hasDescription() {
+        return description != null && !description.isBlank();
+    }
+
+    public boolean hasAvailable() {
+        return available != null;
+    }
+
+    public boolean hasRequestId() {
+        return requestId != null;
+    }
 }
