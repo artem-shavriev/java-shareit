@@ -26,6 +26,7 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "description")
     private String description;
 
     @Column(name = "requestor_id")
