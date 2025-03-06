@@ -63,7 +63,7 @@ public class ItemMapper {
         item.setName(itemDto.getName());
         item.setAvailable(itemDto.getAvailable());
         item.setDescription(itemDto.getDescription());
-        item.setRequestId(item.getRequestId());
+        item.setRequestId(itemDto.getRequestId());
 
         return item;
     }

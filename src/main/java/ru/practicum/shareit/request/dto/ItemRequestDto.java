@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,8 +14,10 @@ import java.time.LocalDateTime;
 public class ItemRequestDto {
     private Integer id;
     private String description;
-    private Integer requestor;
+    private Integer requestorId;
 
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime created;
+
+    private List<RequestAnswerDto> items;
 }
