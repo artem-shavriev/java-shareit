@@ -20,6 +20,7 @@ import ru.practicum.shareit.user.model.User;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "items", schema = "public")
 public class Item {

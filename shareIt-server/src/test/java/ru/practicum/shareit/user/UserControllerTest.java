@@ -74,7 +74,7 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserById_shouldGetUserByIdAndReturnOk() throws Exception {
+    void getUserById_shouldGetUserByIdAnd() throws Exception {
         UserDto user2 = UserDto.builder().id(2).name("Add2").email("@Add2.com").build();
 
         when(userService.getUserById(2)).thenReturn(user2);
@@ -90,7 +90,7 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUser_shouldUpdateUserAndReturnOk() throws Exception {
+    void updateUser_shouldUpdateUserAnd() throws Exception {
         UserDto userToUpdate = UserDto.builder().id(2).name("Add2").email("@Add2.com").build();
 
         when(userService.updateUser(userToUpdate, 2)).thenReturn(userToUpdate);
@@ -107,7 +107,7 @@ class UserControllerTest {
     }
 
     @Test
-    void deleteUser_shouldDeleteUserAndReturnOk() throws Exception {
+    void deleteUser_shouldDeleteUserAnd() throws Exception {
         UserDto userToUpdate = UserDto.builder().id(2).name("Add2").email("@Add2.com").build();
 
         when(userService.deleteUser(2)).thenReturn(userToUpdate);

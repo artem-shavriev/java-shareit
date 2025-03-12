@@ -7,10 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.model.State;
@@ -40,7 +36,7 @@ public class BookingControllerTest {
     private MockMvc mvc;
 
     @Test
-    void addBooking_shouldAddBookingAndReturnOk() throws Exception {
+    void addBooking_shouldAddBookingAnd() throws Exception {
         ItemDto item = ItemDto.builder().id(1).build();
         UserDto booker = UserDto.builder().id(1).build();
         LocalDateTime startTime = LocalDateTime.of(2025, 3, 10, 12, 0); // Укажи дату вручную
@@ -69,7 +65,7 @@ public class BookingControllerTest {
 
 
     @Test
-    void findBookingById_shouldFindBookingByIdAndReturnOk() throws Exception {
+    void findBookingById_shouldFindBookingByIdAnd() throws Exception {
         ItemDto item = ItemDto.builder().id(1).build();
         UserDto booker = UserDto.builder().id(1).build();
         LocalDateTime startTime = LocalDateTime.of(2025, 3, 10, 12, 0); // Укажи дату вручную

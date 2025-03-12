@@ -37,7 +37,7 @@ public class ItemControllerTest {
     private MockMvc mvc;
 
     @Test
-    void addItem_shouldAddItemAndReturnOk() throws Exception {
+    void addItem_shouldAddItemAnd() throws Exception {
         ItemDto itemToCreate = ItemDto.builder().ownerId(1).name("Item").description("description").available(true)
                 .requestId(1).build();
         ItemDto itemCreated = ItemDto.builder().id(1).ownerId(1).name("Item").description("description").available(true)
@@ -61,7 +61,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void updateItem_shouldUpdateItemAndReturnOk() throws Exception {
+    void updateItem_shouldUpdateItemAnd() throws Exception {
         ItemDtoUpdate itemToUpdate = ItemDtoUpdate.builder().ownerId(1).name("Item").description("description").available(true)
                 .requestId(1).build();
         ItemDto updatedItem = ItemDto.builder().id(1).ownerId(1).name("Item").description("description").available(true)
@@ -84,7 +84,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void getItemById_shouldGetItemByIdAndReturnOk() throws Exception {
+    void getItemById_shouldGetItemByIdAnd() throws Exception {
         BookingDtoWithDate lastBooking = BookingDtoWithDate.builder()
                 .start(LocalDateTime.now()).end(LocalDateTime.now().plusMinutes(30)).build();
         BookingDtoWithDate nextBooking = BookingDtoWithDate.builder()
@@ -120,7 +120,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void getOwnerItems_shouldGetOwnerItemsAndReturnOk() throws Exception {
+    void getOwnerItems_shouldGetOwnerItemsAnd() throws Exception {
         BookingDtoWithDate lastBooking = BookingDtoWithDate.builder()
                 .start(LocalDateTime.now()).end(LocalDateTime.now().plusMinutes(30)).build();
         BookingDtoWithDate nextBooking = BookingDtoWithDate.builder()
@@ -165,7 +165,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void itemSearch_shouldSearchItemAndReturnOk() throws Exception {
+    void itemSearch_shouldSearchItemAnd() throws Exception {
         ItemDto item = ItemDto.builder().id(1).ownerId(1).name("Item").description("description").available(true)
                 .requestId(1).build();
 
@@ -192,7 +192,7 @@ public class ItemControllerTest {
     }
 
     @Test
-    void addComment_shouldAddCommentAndReturnOk() throws Exception {
+    void addComment_shouldAddCommentAnd() throws Exception {
         CommentDto comment = CommentDto.builder()
                 .id(1).text("text").build();
 

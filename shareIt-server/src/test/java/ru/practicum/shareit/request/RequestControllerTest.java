@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -9,7 +8,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 
 import java.nio.charset.StandardCharsets;
@@ -32,7 +30,7 @@ public class RequestControllerTest {
     private MockMvc mvc;
 
     @Test
-    void addItemRequest_shouldAddItemRequestAndReturnOk() throws Exception {
+    void addItemRequest_shouldAddItemRequestAnd() throws Exception {
         LocalDateTime create = LocalDateTime.of(2025, 3, 10, 12, 0); // Укажи дату вручную
 
         ItemRequestDto itemRequestToCreate = ItemRequestDto.builder().description("description").created(create)
@@ -61,7 +59,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    void findUserRequests_shouldFindUserRequestsAndReturnOk() throws Exception {
+    void findUserRequests_shouldFindUserRequestsAnd() throws Exception {
         LocalDateTime create = LocalDateTime.of(2025, 3, 10, 12, 0); // Укажи дату вручную
 
         ItemRequestDto request = ItemRequestDto.builder().id(1).description("description").created(create)
@@ -89,7 +87,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    void findAllRequests_shouldFindAllRequestsAndReturnOk() throws Exception {
+    void findAllRequests_shouldFindAllRequestsAnd() throws Exception {
         LocalDateTime create = LocalDateTime.of(2025, 3, 10, 12, 0); // Укажи дату вручную
 
         ItemRequestDto request = ItemRequestDto.builder().id(1).description("description").created(create)
@@ -117,7 +115,7 @@ public class RequestControllerTest {
     }
 
     @Test
-    void findByRequestsId_shouldFindByRequestsIdAndReturnOk() throws Exception {
+    void findByRequestsId_shouldFindByRequestsIdAnd() throws Exception {
         LocalDateTime create = LocalDateTime.of(2025, 3, 10, 12, 0); // Укажи дату вручную
 
         ItemRequestDto request = ItemRequestDto.builder().id(1).description("description").created(create)

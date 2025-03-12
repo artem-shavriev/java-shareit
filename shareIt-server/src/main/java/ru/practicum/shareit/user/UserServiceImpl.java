@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     public UserDto addUser(UserDto userDtoRequest) {
         User user = userMapper.mapToUser(userDtoRequest);
         user = userRepository.save(user);
-        log.info("Пользователь с id {} добавлен", user.getId());
+        log.info("Пользователь добавлен");
         return userMapper.mapToUserDto(user);
     }
 
