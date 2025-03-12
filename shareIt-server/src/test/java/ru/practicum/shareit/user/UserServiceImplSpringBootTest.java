@@ -45,12 +45,12 @@ public class UserServiceImplSpringBootTest {
         List<User> userList = new ArrayList<>();
         userList.add(user);
         Mockito.when(userRepository.findAll()).thenReturn(userList);
-        List<UserDto> UserDtoList = userService.getUsers();
+        List<UserDto> userDtoList = userService.getUsers();
 
-        Assertions.assertNotNull(UserDtoList);
-        Assertions.assertEquals(UserDtoList.get(0).getId(), user.getId());
-        Assertions.assertEquals(UserDtoList.get(0).getName(), user.getName());
-        Assertions.assertEquals(UserDtoList.get(0).getEmail(), user.getEmail());
+        Assertions.assertNotNull(userDtoList);
+        Assertions.assertEquals(userDtoList.get(0).getId(), user.getId());
+        Assertions.assertEquals(userDtoList.get(0).getName(), user.getName());
+        Assertions.assertEquals(userDtoList.get(0).getEmail(), user.getEmail());
 
         Mockito.verify(userRepository, Mockito.times(1)).findAll();
     }
