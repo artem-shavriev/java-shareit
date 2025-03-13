@@ -18,7 +18,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("select b from Booking b " +
             "join b.booker br " +
-            "where br.id = ?1 and b.status = 'CURRENT' and b.start <= ?2 and b.end >= ?2 " +
+            "where br.id = ?1 and (b.status = 'APPROVED' or b.status = 'WAITING') and b.start <= ?2 and b.end >= ?2 " +
             "order by b.start")
     List<Booking> findBookingByOwnerIdAndCurrentState(Integer bookerId, LocalDateTime now);
 
@@ -56,7 +56,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("select b from Booking b " +
             "join b.item i " +
-            "where i.id = ?1 and b.status = 'CURRENT' and b.start <= ?2 and b.end >= ?2 " +
+            "where i.id = ?1 and (b.status = 'APPROVED' or b.status = 'WAITING') and b.start <= ?2 and b.end >= ?2 " +
             "order by b.start")
     List<Booking> findItemBookingsByIdAndCurrentState(Integer itemId, LocalDateTime now);
 
