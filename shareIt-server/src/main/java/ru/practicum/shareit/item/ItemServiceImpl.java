@@ -44,7 +44,8 @@ public class ItemServiceImpl implements ItemService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
-        Item item = itemRepository.save(itemMapper.mapToItem(itemDtoRequest, user));
+        Item item = itemMapper.mapToItem(itemDtoRequest, user);
+        item = itemRepository.save(item);
 
         log.info("Добавлена вещь с id {}", item.getId());
         return itemMapper.mapToItemDto(item);
@@ -69,7 +70,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional(readOnly = true)
     public ItemDtoWithComments getItem(Integer itemId) {
-        Item item = itemRepository.getById(itemId);
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Item not found"));
 
         log.info("Вещь с id {} получена.", itemId);
         return itemMapper.mapToItemDtoWithComments(item);
@@ -183,10 +185,8 @@ public class ItemServiceImpl implements ItemService {
         comment.setAuthor(author);
         comment.setCreated(LocalDateTime.now());
 
-        commentRepository.save(comment);
-
         log.info("Отзыв на вещь с id {} оставлен пользователем с id {}", itemId, userId);
-        return commentMapper.mapToCommentDto(comment);
+        return commentMapper.mapToCommentDto(commentRepository.save(comment));
     }
 
     public Item updateFields(Item item, ItemDtoUpdate itemDtoUpdate) {

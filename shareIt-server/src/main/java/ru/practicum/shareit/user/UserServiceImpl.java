@@ -49,9 +49,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь с данным id не существует."));
 
         user = updateFields(user, userDtoRequest);
+        user = userRepository.save(user);
 
         log.info("Пользователь с id {} обновлен.", userId);
-        return userMapper.mapToUserDto(userRepository.save(user));
+        return userMapper.mapToUserDto(user);
     }
 
     @Override

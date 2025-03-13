@@ -12,7 +12,7 @@ import java.util.List;
 public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("select b from Booking b " +
             "join b.booker br " +
-            "where br = ?1 and b.status = 'WAITING' " +
+            "where br.id = ?1 and b.status = 'WAITING' " +
             "order by b.start")
     List<Booking> findUsersBookingsByIdAndWaitingState(Integer bookerId);
 
@@ -50,7 +50,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
 
     @Query("select b from Booking b " +
             "join b.item i " +
-            "where i = ?1 and b.status = 'WAITING' " +
+            "where i.id = ?1 and b.status = 'WAITING' " +
             "order by b.start")
     List<Booking> findItemBookingsByIdAndWaitingState(Integer itemId);
 

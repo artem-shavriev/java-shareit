@@ -6,7 +6,7 @@
     <module name="shareit-server" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="ru.practicum.shareit.item.*" />
+        <option name="PATTERN" value="ru.practicum.shareit.item.ItemServiceImplSpringBootTest" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
