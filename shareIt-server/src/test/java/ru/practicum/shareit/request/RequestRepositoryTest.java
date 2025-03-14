@@ -4,10 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserRepository;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
@@ -40,8 +38,21 @@ public class RequestRepositoryTest {
     }
 
     @Test
-    void shouldFindAllOrderByCreatedDesc() {
+    void shouldFindAllWithoutRequestorOrderByCreatedDesc() {
+        LocalDateTime create = LocalDateTime.now();
+
+        User user = User.builder().id(1).name("Add").email("@Add.com").build();
+        User user2 = User.builder().id(2).name("Add2").email("@Add2.com").build();
+        userRepository.save(user);
+        userRepository.save(user2);
+
+        ItemRequest itemRequestToCreate = ItemRequest.builder().created(create).description("description")
+                .requestorId(2).build();
+        requestRepository.save(itemRequestToCreate);
+
         List<ItemRequest> requestsList = requestRepository.findAllOrderByCreatedDesc(1);
-        Assertions.assertNotNull(requestsList);
+
+        Assertions.assertNotNull(requestsList.get(0));
+        Assertions.assertEquals(requestsList.get(0).getDescription(), "description");
     }
 }

@@ -12,6 +12,8 @@ import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoUpdate;
@@ -26,6 +28,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringJUnitConfig
 @SpringBootTest
@@ -138,10 +142,26 @@ public class ItemServiceImplSpringBootTest {
         Item item = Item.builder().id(itemId).name("name1").requestId(1).owner(user).
                 available(true).description("description1").build();
 
-        LocalDateTime startBooking = LocalDateTime.now().minusHours(1);
-        LocalDateTime endBooking = LocalDateTime.now().plusHours(1);
+        LocalDateTime startBooking = LocalDateTime.now().minusHours(2);
+        LocalDateTime endBooking = LocalDateTime.now().minusMinutes(10);
+
         Booking booking = Booking.builder().id(1).start(startBooking)
                 .status(Status.APPROVED).end(endBooking).item(item).booker(user).build();
+
+        Booking booking2 = Booking.builder().id(2).start(startBooking)
+                .status(Status.APPROVED).end(endBooking.plusMinutes(5)).item(item).booker(user).build();
+
+        Booking booking3 = Booking.builder().id(3).start(startBooking.plusHours(12))
+                .status(Status.REJECTED).end(endBooking.plusHours(15)).item(item).booker(user).build();
+
+        Booking booking4 = Booking.builder().id(4).start(startBooking.plusHours(5))
+                .status(Status.REJECTED).end(endBooking.plusHours(5)).item(item).booker(user).build();
+
+        Booking booking5 = Booking.builder().id(5).start(startBooking.plusHours(10))
+                .status(Status.APPROVED).end(endBooking.plusHours(10)).item(item).booker(user).build();
+
+        Booking booking6 = Booking.builder().id(6).start(startBooking.minusHours(10))
+                .status(Status.APPROVED).end(endBooking.plusHours(10)).item(item).booker(user).build();
 
         Comment comment = Comment.builder().text("text").item(item).author(user).created(LocalDateTime.now()).build();
 
@@ -152,6 +172,11 @@ public class ItemServiceImplSpringBootTest {
 
         List<Booking> bookingList = new ArrayList<>();
         bookingList.add(booking);
+        bookingList.add(booking2);
+        bookingList.add(booking3);
+        bookingList.add(booking4);
+        bookingList.add(booking5);
+        bookingList.add(booking6);
 
         Mockito.when(itemRepository.save(ArgumentMatchers.any())).thenReturn(item);
         Mockito.when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(item));
@@ -169,6 +194,11 @@ public class ItemServiceImplSpringBootTest {
         Assertions.assertNotNull(foundItems.get(0).getNextBooking());
         Assertions.assertNotNull(foundItems.get(0).getLastBooking());
         Assertions.assertEquals(bookingList.get(0).getStatus(), Status.APPROVED);
+
+        List<Booking> emptyList = new ArrayList<>();
+        Mockito.when(bookingRepository.findAllByItemId(itemId)).thenReturn(emptyList);
+        itemService.getOwnerItems(1);
+
     }
 
     @Test
@@ -195,6 +225,9 @@ public class ItemServiceImplSpringBootTest {
     void shouldAddComment() {
         Integer itemId = 1;
         Item item = Item.builder().id(itemId).name("name1").requestId(1)
+                .available(true).description("description1").build();
+
+        Item item1 = Item.builder().id(2).name("name1").requestId(1)
                 .available(true).description("description1").build();
 
         User user = User.builder().id(1).name("Add1").email("@Add1.com").build();
@@ -226,6 +259,23 @@ public class ItemServiceImplSpringBootTest {
         Assertions.assertEquals(savedComment.getText(), commentDto.getText());
         Assertions.assertEquals(savedComment.getItemName(), commentDto.getItemName());
         Assertions.assertEquals(savedComment.getAuthorName(), commentDto.getAuthorName());
+
+        Booking booking2 = Booking.builder().id(1).start(startBooking)
+                .status(Status.APPROVED).end(endBooking).item(item1).booker(user).build();
+        List<Booking> userBookingsWithBadId= new ArrayList<>();
+        userBookingsWithBadId.add(booking2);
+        Mockito.when(bookingRepository.findAllByBookerIdOrderByStart(1)).thenReturn(userBookingsWithBadId);
+
+        assertThrows(ValidationException.class, () -> {
+            itemService.addComment(itemId, 1, commentDto);
+        });
+
+        List<Booking> emptyList = new ArrayList<>();
+        Mockito.when(bookingRepository.findAllByBookerIdOrderByStart(1)).thenReturn(emptyList);
+        assertThrows(NotFoundException.class, () -> {
+            itemService.addComment(itemId, 1, commentDto);
+        });
+
     }
 
     @Test
@@ -236,11 +286,27 @@ public class ItemServiceImplSpringBootTest {
         ItemDtoUpdate itemDtoUpdate = ItemDtoUpdate.builder().name("name1").requestId(1)
                 .available(true).description("description1").build();
 
+        ItemDtoUpdate itemDtoUpdate2 = ItemDtoUpdate.builder().requestId(1)
+                .available(true).description("description1").build();
+
+        ItemDtoUpdate itemDtoUpdate3 = ItemDtoUpdate.builder()
+                .available(true).description("description1").build();
+
+        ItemDtoUpdate itemDtoUpdate4 = ItemDtoUpdate.builder().
+                description("description1").build();
+
+        ItemDtoUpdate itemDtoUpdate5 = ItemDtoUpdate.builder().ownerId(1).available(true).build();
+
+
         User user = User.builder().id(1).name("Add1").email("@Add1.com").build();
 
         Mockito.when(userRepository.getReferenceById(1)).thenReturn(user);
 
         Item updatedItem = itemService.updateFields(item, itemDtoUpdate);
+        Item updatedItem1 = itemService.updateFields(item, itemDtoUpdate2);
+        Item updatedItem2 = itemService.updateFields(item, itemDtoUpdate3);
+        Item updatedItem3 = itemService.updateFields(item, itemDtoUpdate4);
+        Item updatedItem4 = itemService.updateFields(item, itemDtoUpdate5);
 
         Assertions.assertNotNull(updatedItem);
         Assertions.assertEquals(updatedItem.getDescription(), item.getDescription());

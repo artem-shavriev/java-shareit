@@ -96,6 +96,7 @@ public class BookingServiceImpl implements BookingService {
                     bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndRejectedState(userId, now));
             case ALL ->
                     bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndAllState(userId));
+            default -> throw new NotFoundException("Неизвестный state");
         };
     }
 

@@ -1,4 +1,4 @@
-/*
+
 package ru.practicum.shareit.data;
 
 import org.junit.jupiter.api.Assertions;
@@ -11,9 +11,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -54,8 +57,8 @@ public class RequestDataIntegrationTest {
                 .isEqualTo(createdItemRequest);
     }
 
-    */
-/*@Test
+
+@Test
     void shouldFindUserRequests() {
         LocalDateTime create = LocalDateTime.of(2025, 3, 10, 12, 0);
         UserDto userDto = UserDto.builder().name("Add").email("@Add.com").build();
@@ -118,7 +121,7 @@ public class RequestDataIntegrationTest {
                 .usingRecursiveComparison()
                 .ignoringFields("created")
                 .isEqualTo(createdItemRequest);
-    }*//*
+    }
 
 }
-*/
+
