@@ -3,7 +3,7 @@
     <option name="ALTERNATIVE_JRE_PATH" value="corretto-21" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="ru.practicum.shareit.ShareItServer" />
-    <module name="shareit-server" />
+    <module name="server" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="ru.practicum.shareit.item.ItemServiceImplSpringBootTest" />
