@@ -76,7 +76,7 @@ public class RequestServiceImpl implements RequestService {
         List<ItemRequest> requestsList = requestRepository.findAllOrderByCreatedDesc(requestorId);
         List<ItemRequestDto> requestsDtoList = new ArrayList<>();
 
-        if (requestsList == null ||requestsList.isEmpty()) {
+        if (requestsList == null || requestsList.isEmpty()) {
             log.error("Список запросов пуст или не найден.");
             throw new NotFoundException("Список запросов пуст или не найден.");
         }

@@ -123,7 +123,7 @@ public class ItemServiceImplSpringBootTest {
 
         Mockito.when(itemRepository.save(ArgumentMatchers.any())).thenReturn(item);
         Mockito.when(userRepository.findById(1)).thenReturn(Optional.ofNullable(user));
-        Mockito.when(itemRepository.findById(itemId )).thenReturn(Optional.ofNullable(item));
+        Mockito.when(itemRepository.findById(itemId)).thenReturn(Optional.ofNullable(item));
 
         ItemDto foundItem = itemService.updateItem(itemDtoUpdate, 1, itemId);
 
@@ -139,8 +139,8 @@ public class ItemServiceImplSpringBootTest {
 
         Integer itemId = 1;
 
-        Item item = Item.builder().id(itemId).name("name1").requestId(1).owner(user).
-                available(true).description("description1").build();
+        Item item = Item.builder().id(itemId).name("name1").requestId(1).owner(user)
+                .available(true).description("description1").build();
 
         LocalDateTime startBooking = LocalDateTime.now().minusHours(2);
         LocalDateTime endBooking = LocalDateTime.now().minusMinutes(10);
@@ -262,7 +262,7 @@ public class ItemServiceImplSpringBootTest {
 
         Booking booking2 = Booking.builder().id(1).start(startBooking)
                 .status(Status.APPROVED).end(endBooking).item(item1).booker(user).build();
-        List<Booking> userBookingsWithBadId= new ArrayList<>();
+        List<Booking> userBookingsWithBadId = new ArrayList<>();
         userBookingsWithBadId.add(booking2);
         Mockito.when(bookingRepository.findAllByBookerIdOrderByStart(1)).thenReturn(userBookingsWithBadId);
 
@@ -292,8 +292,8 @@ public class ItemServiceImplSpringBootTest {
         ItemDtoUpdate itemDtoUpdate3 = ItemDtoUpdate.builder()
                 .available(true).description("description1").build();
 
-        ItemDtoUpdate itemDtoUpdate4 = ItemDtoUpdate.builder().
-                description("description1").build();
+        ItemDtoUpdate itemDtoUpdate4 = ItemDtoUpdate.builder()
+                .description("description1").build();
 
         ItemDtoUpdate itemDtoUpdate5 = ItemDtoUpdate.builder().ownerId(1).available(true).build();
 

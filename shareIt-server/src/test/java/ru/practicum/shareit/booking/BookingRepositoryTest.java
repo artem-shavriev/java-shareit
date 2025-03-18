@@ -47,8 +47,8 @@ public class BookingRepositoryTest {
                 .requestorId(bookerId).build();
         requestRepository.save(request);
 
-        Item item = Item.builder().name("name1").owner(owner).
-                available(true).description("description1").build();
+        Item item = Item.builder().name("name1").owner(owner)
+                .available(true).description("description1").build();
         item = itemRepository.save(item);
 
         Booking booking = Booking.builder().start(startBooking)

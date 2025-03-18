@@ -59,13 +59,13 @@ public class BookingServiceImplTest {
 
         User owner = User.builder().name("owner").email("@owner.com").build();
 
-        ItemDto itemDto = ItemDto.builder().id(1).name("name1").ownerId(owner.getId()).
-                available(true).description("description1").build();
-        Item item = Item.builder().id(1).name("name1").owner(owner).
-                available(true).description("description1").build();
+        ItemDto itemDto = ItemDto.builder().id(1).name("name1").ownerId(owner.getId())
+                .available(true).description("description1").build();
+        Item item = Item.builder().id(1).name("name1").owner(owner)
+                .available(true).description("description1").build();
 
-        Item itemNotAvailable = Item.builder().id(2).name("name1").owner(owner).
-                available(false).description("description1").build();
+        Item itemNotAvailable = Item.builder().id(2).name("name1").owner(owner)
+                .available(false).description("description1").build();
 
         Integer itemId = item.getId();
 
@@ -107,10 +107,10 @@ public class BookingServiceImplTest {
 
         User owner = User.builder().name("owner").email("@owner.com").build();
 
-        ItemDto itemDto = ItemDto.builder().id(1).name("name1").ownerId(owner.getId()).
-                available(true).description("description1").build();
-        Item item = Item.builder().id(1).name("name1").owner(owner).
-                available(true).description("description1").build();
+        ItemDto itemDto = ItemDto.builder().id(1).name("name1").ownerId(owner.getId())
+                .available(true).description("description1").build();
+        Item item = Item.builder().id(1).name("name1").owner(owner)
+                .available(true).description("description1").build();
 
         Booking booking = Booking.builder().id(1).start(startBooking)
                 .status(Status.WAITING).end(endBooking).item(item).booker(booker).build();
@@ -136,10 +136,10 @@ public class BookingServiceImplTest {
 
         User owner = User.builder().id(1).name("owner").email("@owner.com").build();
 
-        ItemDto itemDto = ItemDto.builder().id(1).name("name1").ownerId(owner.getId()).
-                available(true).description("description1").build();
-        Item item = Item.builder().id(1).name("name1").owner(owner).
-                available(true).description("description1").build();
+        ItemDto itemDto = ItemDto.builder().id(1).name("name1").ownerId(owner.getId())
+                .available(true).description("description1").build();
+        Item item = Item.builder().id(1).name("name1").owner(owner)
+                .available(true).description("description1").build();
 
         Integer itemId = item.getId();
 
@@ -186,8 +186,8 @@ public class BookingServiceImplTest {
 
         User owner = User.builder().name("owner").email("@owner.com").build();
 
-        Item item = Item.builder().id(1).name("name1").owner(owner).
-                available(true).description("description1").build();
+        Item item = Item.builder().id(1).name("name1").owner(owner)
+                .available(true).description("description1").build();
 
         Booking booking = Booking.builder().id(1).start(startBooking)
                 .status(Status.WAITING).end(endBooking).item(item).booker(booker).build();
@@ -214,7 +214,7 @@ public class BookingServiceImplTest {
         List<Booking> bookingListRejected = new ArrayList<>();
         bookingListRejected.add(bookingRejected);
 
-        List<Booking> bookingListAll= new ArrayList<>();
+        List<Booking> bookingListAll = new ArrayList<>();
         bookingListAll.add(bookingRejected);
         bookingListAll.add(bookingCurrent);
         bookingListAll.add(bookingPast);
@@ -224,10 +224,10 @@ public class BookingServiceImplTest {
         Mockito.when(bookingRepository
                 .findUsersBookingsByIdAndWaitingState(bookerId)).thenReturn(bookingListWaiting);
         Mockito.when(bookingRepository
-                .findBookingByOwnerIdAndPastState(ArgumentMatchers.any(), ArgumentMatchers.any()))
+                        .findBookingByOwnerIdAndPastState(ArgumentMatchers.any(), ArgumentMatchers.any()))
                 .thenReturn(bookingListPast);
         Mockito.when(bookingRepository
-                .findBookingByOwnerIdAndCurrentState(ArgumentMatchers.any(), ArgumentMatchers.any()))
+                        .findBookingByOwnerIdAndCurrentState(ArgumentMatchers.any(), ArgumentMatchers.any()))
                 .thenReturn(bookingListCurrent);
         Mockito.when(bookingRepository
                         .findBookingByOwnerIdAndFutureState(ArgumentMatchers.any(), ArgumentMatchers.any()))
@@ -264,8 +264,8 @@ public class BookingServiceImplTest {
         User owner = User.builder().id(1).name("owner").email("@owner.com").build();
         Integer ownerId = owner.getId();
 
-        Item item = Item.builder().id(1).name("name1").owner(owner).
-                available(true).description("description1").build();
+        Item item = Item.builder().id(1).name("name1").owner(owner)
+                .available(true).description("description1").build();
         List<Item> itemList = new ArrayList<>();
         itemList.add(item);
 
@@ -294,7 +294,7 @@ public class BookingServiceImplTest {
         List<Booking> bookingListRejected = new ArrayList<>();
         bookingListRejected.add(bookingRejected);
 
-        List<Booking> bookingListAll= new ArrayList<>();
+        List<Booking> bookingListAll = new ArrayList<>();
         bookingListAll.add(bookingRejected);
         bookingListAll.add(bookingCurrent);
         bookingListAll.add(bookingPast);
@@ -324,14 +324,14 @@ public class BookingServiceImplTest {
                 .findUsersItemsBookings(ownerId, State.WAITING);
         List<BookingDtoResponse> findBookingPastDtoList = bookingService
                 .findUsersItemsBookings(ownerId, State.PAST);
-        List<BookingDtoResponse> findBookingCurrentDtoList = bookingService.
-                findUsersItemsBookings(ownerId, State.CURRENT);
-        List<BookingDtoResponse> findBookingFutureDtoList = bookingService.
-                findUsersItemsBookings(ownerId, State.FUTURE);
-        List<BookingDtoResponse> findBookingRejectedDtoList = bookingService.
-                findUsersItemsBookings(ownerId, State.REJECTED);
-        List<BookingDtoResponse> findBookingAllDtoList = bookingService.
-                findUsersItemsBookings(ownerId, State.ALL);
+        List<BookingDtoResponse> findBookingCurrentDtoList = bookingService
+                .findUsersItemsBookings(ownerId, State.CURRENT);
+        List<BookingDtoResponse> findBookingFutureDtoList = bookingService
+                .findUsersItemsBookings(ownerId, State.FUTURE);
+        List<BookingDtoResponse> findBookingRejectedDtoList = bookingService
+                .findUsersItemsBookings(ownerId, State.REJECTED);
+        List<BookingDtoResponse> findBookingAllDtoList = bookingService
+                .findUsersItemsBookings(ownerId, State.ALL);
 
         Assertions.assertEquals(findBookingWaitingDtoList.get(0).getStatus(), Status.WAITING);
         Assertions.assertEquals(findBookingPastDtoList.get(0).getStatus(), Status.CANCELED);
@@ -348,8 +348,7 @@ public class BookingServiceImplTest {
         });
 
         assertThrows(NotFoundException.class, () -> {
-            bookingService.
-                    findUsersItemsBookings(ownerId, State.TEST);
+            bookingService.findUsersItemsBookings(ownerId, State.TEST);
         });
     }
 }
