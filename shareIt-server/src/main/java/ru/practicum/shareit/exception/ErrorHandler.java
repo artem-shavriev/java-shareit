@@ -19,18 +19,6 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflictError(final DuplicatedDataException e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public ErrorResponse handleAccessDenied(final AccessDeniedException e) {
-        return new ErrorResponse(e.getMessage());
-    }
-
     public class ErrorResponse {
         private final String error;
 
