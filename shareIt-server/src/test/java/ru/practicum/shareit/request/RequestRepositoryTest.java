@@ -23,7 +23,7 @@ public class RequestRepositoryTest {
     void shouldFindAllByRequestorId() {
         LocalDateTime create = LocalDateTime.now();
 
-        User user = User.builder().id(1).name("Add").email("@Add.com").build();
+        User user = User.builder().name("Add").email("@Add.com").build();
         User createdUser = userRepository.save(user);
         Integer userId = createdUser.getId();
 
@@ -31,7 +31,7 @@ public class RequestRepositoryTest {
                 .requestorId(userId).build();
         requestRepository.save(itemRequestToCreate);
 
-        List<ItemRequest> requestsList = requestRepository.findAllByRequestorIdOrderByCreatedDesc(1);
+        List<ItemRequest> requestsList = requestRepository.findAllByRequestorIdOrderByCreatedDesc(userId);
 
         Assertions.assertNotNull(requestsList.get(0));
         Assertions.assertEquals(requestsList.get(0).getDescription(), "description");
@@ -41,18 +41,22 @@ public class RequestRepositoryTest {
     void shouldFindAllWithoutRequestorOrderByCreatedDesc() {
         LocalDateTime create = LocalDateTime.now();
 
-        User user = User.builder().id(1).name("Add").email("@Add.com").build();
-        User user2 = User.builder().id(2).name("Add2").email("@Add2.com").build();
-        userRepository.save(user);
+        User user1 = User.builder().name("Add2").email("@Add2.com").build();
+        User user2 = User.builder().name("Add3").email("@Add3.com").build();
+        userRepository.save(user1);
         userRepository.save(user2);
 
-        ItemRequest itemRequestToCreate = ItemRequest.builder().created(create).description("description")
-                .requestorId(2).build();
+        ItemRequest itemRequestToCreate = ItemRequest.builder().created(create).description("description1")
+                .requestorId(user1.getId()).build();
+        ItemRequest itemRequestToCreate2 = ItemRequest.builder().created(create).description("description2")
+                .requestorId(user2.getId()).build();
         requestRepository.save(itemRequestToCreate);
+        requestRepository.save(itemRequestToCreate2);
 
-        List<ItemRequest> requestsList = requestRepository.findAllOrderByCreatedDesc(1);
+        List<ItemRequest> expectedRquestsList = requestRepository.findAllOrderByCreatedDesc((user1.getId()));
 
-        Assertions.assertNotNull(requestsList.get(0));
-        Assertions.assertEquals(requestsList.get(0).getDescription(), "description");
+        Assertions.assertNotNull(expectedRquestsList.get(0));
+        Assertions.assertEquals(expectedRquestsList.size(), 1);
+        Assertions.assertEquals(expectedRquestsList.get(0).getDescription(), "description2");
     }
 }

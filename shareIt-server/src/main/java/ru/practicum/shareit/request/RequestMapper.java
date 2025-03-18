@@ -8,7 +8,6 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.RequestAnswerDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -23,28 +22,6 @@ public class RequestMapper {
         itemRequestDto. setCreated(itemRequest.getCreated());
 
         return itemRequestDto;
-    }
-
-    public List<ItemRequestDto> mapToDto(Iterable<ItemRequest> itemRequests) {
-
-        List<ItemRequestDto> itemRequestDtos = new ArrayList<>();
-
-        for (ItemRequest request : itemRequests) {
-            itemRequestDtos.add(mapToDto(request));
-        }
-
-        return itemRequestDtos;
-    }
-
-    public ItemRequest mapToItemRequest(ItemRequestDto itemRequestDto) {
-        ItemRequest itemRequest = new ItemRequest();
-
-        itemRequest.setId(itemRequestDto.getId());
-        itemRequest.setRequestorId(itemRequestDto.getRequestorId());
-        itemRequest.setCreated(itemRequestDto.getCreated());
-        itemRequest.setDescription(itemRequestDto.getDescription());
-
-        return itemRequest;
     }
 
     public RequestAnswerDto mapToRequestAnswerDto(Item item) {
