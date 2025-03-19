@@ -95,7 +95,9 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED ->
                     bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndRejectedState(userId, now));
             case ALL ->
-                    bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndAllState(userId));
+                    //bookingMapper.mapToDtoResponse(bookingRepository.findBookingByOwnerIdAndAllState(userId));
+                    bookingMapper.mapToDtoResponse(bookingRepository
+                            .findAllByBookerIdOrderByStart(userId));
             default -> throw new NotFoundException("Неизвестный state");
         };
     }
@@ -156,7 +158,7 @@ public class BookingServiceImpl implements BookingService {
 
             case ALL:
                 findUserItems.forEach(item -> {
-                    bookingRepository.findItemBookingsByIdAndAllState(item.getId()).forEach(booking ->
+                    bookingRepository.findAllByItemIdOrderByStart(item.getId()).forEach(booking ->
                             userItemsBookings.add(bookingMapper.mapToDtoResponse(booking)));
                 });
                 log.info("Найдены все бронирования вещей пользователя с id {} и state {}", userId, state);

@@ -21,8 +21,8 @@
 	</properties>
 
 	<modules>
-		<module>gateway</module>
 		<module>server</module>
+		<module>gateway</module>
 	</modules>
 
 	<build>

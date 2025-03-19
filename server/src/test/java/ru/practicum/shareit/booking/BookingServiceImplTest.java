@@ -236,7 +236,7 @@ public class BookingServiceImplTest {
                         .findBookingByOwnerIdAndRejectedState(ArgumentMatchers.any(), ArgumentMatchers.any()))
                 .thenReturn(bookingListRejected);
         Mockito.when(bookingRepository
-                        .findBookingByOwnerIdAndAllState(ArgumentMatchers.any()))
+                        .findAllByBookerIdOrderByStart(ArgumentMatchers.any()))
                 .thenReturn(bookingListAll);
 
         List<BookingDtoResponse> findBookingWaitingDtoList = bookingService.findUsersBookings(bookerId, State.WAITING);
@@ -317,7 +317,7 @@ public class BookingServiceImplTest {
                         .findItemBookingsByIdAndRejectedState(ArgumentMatchers.any(), ArgumentMatchers.any()))
                 .thenReturn(bookingListRejected);
         Mockito.when(bookingRepository
-                        .findItemBookingsByIdAndAllState(ArgumentMatchers.any()))
+                        .findAllByItemIdOrderByStart(ArgumentMatchers.any()))
                 .thenReturn(bookingListAll);
 
         List<BookingDtoResponse> findBookingWaitingDtoList = bookingService
@@ -345,10 +345,6 @@ public class BookingServiceImplTest {
 
         assertThrows(NotFoundException.class, () -> {
             bookingService.findUsersItemsBookings(ownerId, State.ALL);
-        });
-
-        assertThrows(NotFoundException.class, () -> {
-            bookingService.findUsersItemsBookings(ownerId, State.TEST);
         });
     }
 }

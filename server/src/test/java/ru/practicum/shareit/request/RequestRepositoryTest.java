@@ -53,7 +53,7 @@ public class RequestRepositoryTest {
         requestRepository.save(itemRequestToCreate);
         requestRepository.save(itemRequestToCreate2);
 
-        List<ItemRequest> expectedRquestsList = requestRepository.findAllOrderByCreatedDesc((user1.getId()));
+        List<ItemRequest> expectedRquestsList = requestRepository.findAllByRequestorIdNotOrderByCreatedDesc((user1.getId()));
 
         Assertions.assertNotNull(expectedRquestsList.get(0));
         Assertions.assertEquals(expectedRquestsList.size(), 1);

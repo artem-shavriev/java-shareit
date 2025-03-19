@@ -24,6 +24,10 @@ public class RequestMapper {
         return itemRequestDto;
     }
 
+    public List<ItemRequestDto> mapToDto(List<ItemRequest> itemRequests) {
+        return itemRequests.stream().map(request -> mapToDto(request)).toList();
+    }
+
     public RequestAnswerDto mapToRequestAnswerDto(Item item) {
         RequestAnswerDto requestAnswerDto = new RequestAnswerDto();
 

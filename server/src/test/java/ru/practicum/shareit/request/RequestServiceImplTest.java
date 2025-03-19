@@ -52,20 +52,6 @@ public class RequestServiceImplTest {
         Assertions.assertNotNull(createdRequest);
         Assertions.assertEquals(createdRequest.getDescription(), itemRequestToCreate.getDescription());
         Assertions.assertEquals(createdRequest.getRequestorId(), itemRequestToCreate.getRequestorId());
-
-        ItemRequestDto itemRequestDtoWithoutDescription = ItemRequestDto.builder().created(create)
-                .build();
-
-        ItemRequestDto itemRequestDtoBlankDescription = ItemRequestDto.builder().description("").created(create)
-                .build();
-
-        assertThrows(NotFoundException.class, () -> {
-            requestService.addRequest(itemRequestDtoWithoutDescription, 1);
-        });
-
-        assertThrows(NotFoundException.class, () -> {
-            requestService.addRequest(itemRequestDtoBlankDescription, 1);
-        });
     }
 
     @Test
@@ -128,7 +114,8 @@ public class RequestServiceImplTest {
         List<Item> findItemslist = new ArrayList<>();
         findItemslist.add(item);
 
-        Mockito.when(requestRepository.findAllOrderByCreatedDesc(searchRequestorId)).thenReturn(requestsList);
+        Mockito.when(requestRepository.findAllByRequestorIdNotOrderByCreatedDesc(searchRequestorId))
+                .thenReturn(requestsList);
         Mockito.when(itemRepository.findAllByRequestId(itemRequest.getId())).thenReturn(findItemslist);
 
         List<ItemRequestDto> findRequests = requestService.findAllRequests(searchRequestorId);
@@ -139,7 +126,7 @@ public class RequestServiceImplTest {
 
         List<ItemRequest> emptyRequestsList = new ArrayList<>();
 
-        Mockito.when(requestRepository.findAllOrderByCreatedDesc(searchRequestorId))
+        Mockito.when(requestRepository.findAllByRequestorIdNotOrderByCreatedDesc(searchRequestorId))
                 .thenReturn(emptyRequestsList);
 
         assertThrows(NotFoundException.class, () -> {

@@ -28,11 +28,6 @@ public class RequestServiceImpl implements RequestService {
     public ItemRequestDto addRequest(ItemRequestDto requestDto, Integer requestorId) {
         String userRequestDescription = requestDto.getDescription();
 
-        if (userRequestDescription == null || userRequestDescription.isBlank()) {
-            log.error("В запросе некорректное описание вещи.");
-            throw new NotFoundException("В запросе нет описания.");
-        }
-
         ItemRequest itemRequest = new ItemRequest();
         itemRequest.setDescription(userRequestDescription);
         itemRequest.setCreated(LocalDateTime.now());
@@ -47,17 +42,28 @@ public class RequestServiceImpl implements RequestService {
     @Transactional(readOnly = true)
     public List<ItemRequestDto> findUserRequests(Integer requestorId) {
         List<ItemRequest> requestsList = requestRepository.findAllByRequestorIdOrderByCreatedDesc(requestorId);
-        List<ItemRequestDto> requestsDtoList = new ArrayList<>();
 
-        if (requestsList.isEmpty() || requestsList == null) {
+        if (requestsList.isEmpty()) {
             log.error("Список запросов пуст или не найден.");
             throw new NotFoundException("Список запросов пуст или не найден.");
         }
 
+        List<ItemRequestDto> requestsDtoList = new ArrayList<>();
+
+        List<Integer> requestsIdList = new ArrayList<>();
+        requestsList.forEach(request -> requestsIdList.add(request.getId()));
+
+        List<Item> findAllRequestsItemsList = itemRepository.findByRequestIdIn(requestsIdList);
+
         for (ItemRequest request : requestsList) {
             Integer requestId = request.getId();
 
-            List<Item> findItemslist = itemRepository.findAllByRequestId(requestId);
+            List<Item> findItemslist = new ArrayList<>();
+                    findAllRequestsItemsList.forEach(item -> {
+                    if (requestId == item.getRequestId()) {
+                        findItemslist.add(item);
+                    }});
+
             List<RequestAnswerDto> answerList = requestMapper.mapToRequestAnswerDto(findItemslist);
 
             ItemRequestDto itemRequestDto = requestMapper.mapToDto(request);
@@ -73,7 +79,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional(readOnly = true)
     public List<ItemRequestDto> findAllRequests(Integer requestorId) {
-        List<ItemRequest> requestsList = requestRepository.findAllOrderByCreatedDesc(requestorId);
+        List<ItemRequest> requestsList = requestRepository.findAllByRequestorIdNotOrderByCreatedDesc(requestorId);
         List<ItemRequestDto> requestsDtoList = new ArrayList<>();
 
         if (requestsList == null || requestsList.isEmpty()) {
@@ -81,10 +87,20 @@ public class RequestServiceImpl implements RequestService {
             throw new NotFoundException("Список запросов пуст или не найден.");
         }
 
+        List<Integer> requestsIdList = new ArrayList<>();
+        requestsList.forEach(request -> requestsIdList.add(request.getId()));
+
+        List<Item> findAllRequestsItemsList = itemRepository.findByRequestIdIn(requestsIdList);
+
         for (ItemRequest request : requestsList) {
             Integer requestId = request.getId();
 
-            List<Item> findItemslist = itemRepository.findAllByRequestId(requestId);
+            List<Item> findItemslist = new ArrayList<>();
+            findAllRequestsItemsList.forEach(item -> {
+                if (requestId == item.getRequestId()) {
+                    findItemslist.add(item);
+                }});
+
             List<RequestAnswerDto> answerList = requestMapper.mapToRequestAnswerDto(findItemslist);
 
             ItemRequestDto itemRequestDto = requestMapper.mapToDto(request);

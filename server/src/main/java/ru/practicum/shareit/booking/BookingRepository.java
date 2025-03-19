@@ -41,13 +41,6 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "order by b.start")
     List<Booking> findBookingByOwnerIdAndRejectedState(Integer bookerId, LocalDateTime now);
 
-
-    @Query("select b from Booking b " +
-            "join b.booker br " +
-            "where br.id = ?1 " +
-            "order by b.start")
-    List<Booking> findBookingByOwnerIdAndAllState(Integer bookerId);
-
     @Query("select b from Booking b " +
             "join b.item i " +
             "where i.id = ?1 and b.status = 'WAITING' " +
@@ -79,12 +72,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
             "order by b.start")
     List<Booking> findItemBookingsByIdAndRejectedState(Integer itemId, LocalDateTime now);
 
-
-    @Query("select b from Booking b " +
-            "join b.item i " +
-            "where i.id = ?1 " +
-            "order by b.start")
-    List<Booking> findItemBookingsByIdAndAllState(Integer itemId);
+    List<Booking> findAllByItemIdOrderByStart(Integer itemId);
 
     List<Booking> findAllByBookerIdOrderByStart(Integer bookerId);
 

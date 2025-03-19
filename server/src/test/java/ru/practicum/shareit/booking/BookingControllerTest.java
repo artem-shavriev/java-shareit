@@ -36,7 +36,7 @@ public class BookingControllerTest {
     private MockMvc mvc;
 
     @Test
-    void addBooking_shouldAddBookingAnd() throws Exception {
+    void addBooking_shouldAddBooking() throws Exception {
         ItemDto item = ItemDto.builder().id(1).build();
         UserDto booker = UserDto.builder().id(1).build();
         LocalDateTime startTime = LocalDateTime.of(2025, 3, 10, 12, 0); // Укажи дату вручную
@@ -65,7 +65,7 @@ public class BookingControllerTest {
 
 
     @Test
-    void findBookingById_shouldFindBookingByIdAnd() throws Exception {
+    void findBookingById_shouldFindBookingById() throws Exception {
         ItemDto item = ItemDto.builder().id(1).build();
         UserDto booker = UserDto.builder().id(1).build();
         LocalDateTime startTime = LocalDateTime.of(2025, 3, 10, 12, 0); // Укажи дату вручную
