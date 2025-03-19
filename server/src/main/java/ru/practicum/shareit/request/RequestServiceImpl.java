@@ -59,10 +59,11 @@ public class RequestServiceImpl implements RequestService {
             Integer requestId = request.getId();
 
             List<Item> findItemslist = new ArrayList<>();
-                    findAllRequestsItemsList.forEach(item -> {
-                    if (requestId == item.getRequestId()) {
-                        findItemslist.add(item);
-                    }});
+            findAllRequestsItemsList.forEach(item -> {
+                if (requestId == item.getRequestId()) {
+                    findItemslist.add(item);
+                }
+            });
 
             List<RequestAnswerDto> answerList = requestMapper.mapToRequestAnswerDto(findItemslist);
 
@@ -99,7 +100,8 @@ public class RequestServiceImpl implements RequestService {
             findAllRequestsItemsList.forEach(item -> {
                 if (requestId == item.getRequestId()) {
                     findItemslist.add(item);
-                }});
+                }
+            });
 
             List<RequestAnswerDto> answerList = requestMapper.mapToRequestAnswerDto(findItemslist);
 
