@@ -14,6 +14,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +61,7 @@ public class RequestServiceImpl implements RequestService {
 
             List<Item> findItemslist = new ArrayList<>();
             findAllRequestsItemsList.forEach(item -> {
-                if (requestId == item.getRequestId()) {
+                if (Objects.equals(requestId, item.getRequestId())) {
                     findItemslist.add(item);
                 }
             });
@@ -98,7 +99,7 @@ public class RequestServiceImpl implements RequestService {
 
             List<Item> findItemslist = new ArrayList<>();
             findAllRequestsItemsList.forEach(item -> {
-                if (requestId == item.getRequestId()) {
+                if (Objects.equals(requestId, item.getRequestId())) {
                     findItemslist.add(item);
                 }
             });
