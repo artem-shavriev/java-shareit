@@ -1,0 +1,6 @@
+server:
+  port: 9090
+
+spring:
+  datasource:
+    driverClassName: org.h2.Driver
